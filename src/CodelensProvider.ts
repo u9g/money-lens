@@ -1,20 +1,18 @@
 import * as vscode from "vscode";
 import { inspect } from "util";
+import { parse_lines } from "money-parser";
 
 /**
  * CodelensProvider
  */
 export class CodelensProvider implements vscode.CodeLensProvider {
   private codeLenses: vscode.CodeLens[] = [];
-  private regex: RegExp;
   private _onDidChangeCodeLenses: vscode.EventEmitter<void> =
     new vscode.EventEmitter<void>();
   public readonly onDidChangeCodeLenses: vscode.Event<void> =
     this._onDidChangeCodeLenses.event;
 
   constructor() {
-    this.regex = /(.+)/g;
-
     vscode.workspace.onDidChangeConfiguration((_) => {
       this._onDidChangeCodeLenses.fire();
     });
@@ -34,48 +32,21 @@ export class CodelensProvider implements vscode.CodeLensProvider {
       const text = document.getText();
 
       // const print = (inp: any) =>
-      //   vscode.window.showInformationMessage(inspect(inp));
+      // vscode.window.showInformationMessage(inspect(inp));
 
-      const balances: Record<string, number> = {};
+      const balances: Map<string, number> | null = parse_lines(text);
 
-      for (const line of text.split("\n")) {
-        const spaceIx = line.lastIndexOf(" ");
-
-        const name = line.substring(0, spaceIx);
-
-        const balanceChange = line.substring(spaceIx + 1);
-        const changeAmount = parseInt(balanceChange.substring(1));
-
-        switch (balanceChange.substring(0, 1)) {
-          case "+": {
-            balances[name] = (balances[name] ?? 0) + changeAmount;
-            break;
-          }
-          case "-": {
-            balances[name] = (balances[name] ?? 0) - changeAmount;
-            break;
-          }
-          default:
-            throw new Error(
-              `Unexpected operator: ${balanceChange.substring(0, 1)}`
-            );
-        }
+      if (balances === null) {
+        return this.codeLenses;
       }
-
-      // print(balances);
 
       const line = document.lineAt(
         document.positionAt(text.lastIndexOf(" ")).line
       );
 
-      // const range = new vscode.Range(
-      //   new vscode.Position(text.split("\n").length, text.lastIndexOf("\n")),
-      //   new vscode.Position(text.split("\n").length, text.lastIndexOf("\n") + 1)
-      // );
-
       this.codeLenses.push(
         new vscode.CodeLens(line.range, {
-          title: Object.entries(balances)
+          title: [...balances.entries()]
             .sort(([a], [b]) => a.localeCompare(b))
             .map((x) => `${x[0]}: ${x[1]}`)
             .join(" | "),
@@ -85,23 +56,6 @@ export class CodelensProvider implements vscode.CodeLensProvider {
         })
       );
 
-      // {
-      //   const regex = new RegExp(this.regex);
-      //   const text = document.getText();
-      //   let matches;
-      //   while ((matches = regex.exec(text)) !== null) {
-      //     const line = document.lineAt(document.positionAt(matches.index).line);
-      //     const indexOf = line.text.indexOf(matches[0]);
-      //     const position = new vscode.Position(line.lineNumber, indexOf);
-      //     const range = document.getWordRangeAtPosition(
-      //       position,
-      //       new RegExp(this.regex)
-      //     );
-      //     if (range) {
-      //       this.codeLenses.push(new vscode.CodeLens(range));
-      //     }
-      //   }
-      // }
       return this.codeLenses;
     }
     return [];

@@ -46,7 +46,11 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "lint": "eslint \"src/**/*.ts\"",
-        "watch": "tsc -watch -p ./"
+        "watch": "tsc -watch -p ./",
+        "wasm-build": "cd money-parser && wasm-pack build --target nodejs && sed -i '' '3d' /Users/jasonlernerman/code/money-lens/money-parser/pkg/money_parser_bg.wasm.d.ts"
+    },
+    "dependencies": {
+        "money-parser": "file:money-parser/pkg"
     },
     "devDependencies": {
         "@types/node": "^16.18.34",

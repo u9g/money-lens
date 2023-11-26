@@ -1,0 +1,5 @@
+apple 10 initial money
+orange 10 initial money
+
+apple -5 passed stop
+apple 20 hit property
