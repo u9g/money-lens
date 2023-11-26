@@ -17,7 +17,7 @@
         "Other"
     ],
     "activationEvents": [
-        "*"
+        "onLanguage:game"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -40,7 +40,22 @@
                     "default": true
                 }
             }
-        }
+        },
+        "languages": [
+            {
+                "id": "game",
+                "extensions": [
+                    ".game"
+                ]
+            }
+        ],
+        "grammars": [
+            {
+                "language": "game",
+                "scopeName": "source.game",
+                "path": "./syntaxes/game.tmLanguage.json"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

@@ -1,0 +1,40 @@
+{
+    "scopeName": "source.game",
+    "patterns": [
+        {
+            "include": "#line"
+        }
+    ],
+    "repository": {
+        "line": {
+            "patterns": [
+                {
+                    "match": "^[a-zA-Z]+",
+                    "name": "variable.game"
+                },
+                {
+                    "match": "\\s",
+                    "name": "whitespace.game"
+                },
+                {
+                    "include": "#expr"
+                },
+				{
+					"match": ".+",
+					"name": "comment.line.double-slash.game"
+				}
+            ]
+        },
+        "expr": {
+            "patterns": [
+                {
+                    "include": "#number"
+                }
+            ]
+        },
+        "number": {
+            "match": "-?[0-9]+",
+            "name": "constant.numeric.decimal.js"
+        }
+    }
+}

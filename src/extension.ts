@@ -18,7 +18,7 @@ let disposables: Disposable[] = [];
 export function activate(context: ExtensionContext) {
   const codelensProvider = new CodelensProvider();
 
-  languages.registerCodeLensProvider("*", codelensProvider);
+  languages.registerCodeLensProvider({ language: "game" }, codelensProvider);
 
   commands.registerCommand("codelens-sample.enableCodeLens", () => {
     workspace
