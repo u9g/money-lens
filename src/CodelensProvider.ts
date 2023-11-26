@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { inspect } from "util";
 import { parse_lines } from "money-parser";
 
 /**
