@@ -1,0 +1,6 @@
+line = { name ~ " " ~ expr }
+name = { ASCII_ALPHA+ }
+
+expr = _{ number }
+
+number = { ASCII_DIGIT } // todo: support negative
